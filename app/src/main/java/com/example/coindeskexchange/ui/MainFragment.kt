@@ -20,7 +20,7 @@ class MainFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: MainFragmentViewModel by viewModel()
-    private val bpiPair: Pair<String, Currency>? = null
+    private val bpiPair: ArrayList<Pair<String, Currency>> = arrayListOf()
     private val epoxyController:MainFragmentEpoxyController by lazy {
         MainFragmentEpoxyController()
     }
@@ -45,24 +45,25 @@ class MainFragment : Fragment() {
                 }
                 is ViewState.Success -> {
                     val result = response.data
-                    Log.d("GGGG", "onViewCreated: $result")
-                    val test = arrayListOf<Pair<String, Currency>>()
                     result?.let {
                         val usd = it.bpi.uSD
                         val gbp = it.bpi.gBP
                         val eur = it.bpi.eUR
-                        test.add(Pair("USD", Currency(usd.code, usd.description, usd.rate, usd.rateFloat, usd.symbol)))
-                        test.add(Pair("GBP", Currency(gbp.code, gbp.description, gbp.rate, gbp.rateFloat, gbp.symbol)))
-                        test.add(Pair("EUR", Currency(eur.code, eur.description, eur.rate, eur.rateFloat, eur.symbol)))
+                        val pairList = arrayListOf(Pair("USD", Currency(usd.code, usd.description, usd.rate, usd.rateFloat, usd.symbol)),
+                            Pair("GBP", Currency(gbp.code, gbp.description, gbp.rate, gbp.rateFloat, gbp.symbol)),
+                            Pair("EUR", Currency(eur.code, eur.description, eur.rate, eur.rateFloat, eur.symbol))
+                        )
+                        bpiPair.add(Pair("USD", Currency(usd.code, usd.description, usd.rate, usd.rateFloat, usd.symbol)))
+                        bpiPair.add(Pair("GBP", Currency(gbp.code, gbp.description, gbp.rate, gbp.rateFloat, gbp.symbol)))
+                        bpiPair.add(Pair("EUR", Currency(eur.code, eur.description, eur.rate, eur.rateFloat, eur.symbol)))
+                        epoxyController.currencyList = pairList
                     }
-                    epoxyController.currencyList = test
                 }
                 is ViewState.Error -> {
 
                 }
             }
         }
-
         binding.epoxyRecView.setController(epoxyController)
     }
 

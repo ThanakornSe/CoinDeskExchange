@@ -25,11 +25,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
-//        debug {
-//            minifyEnabled false
-//            buildConfigField "String", "API_URL", "https://api.coindesk.com/v1/bpi/"
-//            debuggable true
-//        }
+        debug {
+            minifyEnabled false
+            buildConfigField "String", "API_URL", "\"https://api.coindesk.com/v1/bpi/\""
+            debuggable true
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

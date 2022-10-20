@@ -133,4 +133,6 @@ dependencies {
     // Navigation Graph
     implementation "io.insert-koin:koin-androidx-navigation:$koin_android_version"
 
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
 }

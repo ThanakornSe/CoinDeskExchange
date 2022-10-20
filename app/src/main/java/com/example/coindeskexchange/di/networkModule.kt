@@ -3,7 +3,6 @@ package com.example.coindeskexchange.di
 import com.example.coindeskexchange.network.CoinDeskApi
 import com.example.coindeskexchange.utils.AppConst
 import okhttp3.OkHttpClient
-import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory

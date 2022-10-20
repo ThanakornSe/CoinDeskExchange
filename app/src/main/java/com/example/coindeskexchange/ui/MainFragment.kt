@@ -14,17 +14,17 @@ import com.example.coindeskexchange.viewModel.MainFragmentViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainFragment : Fragment() {
-    private var _binding:FragmentMainBinding? = null
+    private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel:MainFragmentViewModel by viewModel()
-    private val bpiPair:Pair<String,Currency>? = null
+    private val viewModel: MainFragmentViewModel by viewModel()
+    private val bpiPair: Pair<String, Currency>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMainBinding.inflate(inflater,container,false)
+        _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -39,6 +39,22 @@ class MainFragment : Fragment() {
                 }
                 is ViewState.Success -> {
                     val result = response.data
+                    val test = arrayListOf<Pair<String, Currency>>()
+                    result?.let {
+                        val usd = it.bpi.uSD
+                        test.add(
+                            Pair(
+                                "USD",
+                                Currency(
+                                    usd.code,
+                                    usd.description,
+                                    usd.rate,
+                                    usd.rateFloat,
+                                    usd.symbol
+                                )
+                            )
+                        )
+                    }
 
                 }
                 is ViewState.Error -> {

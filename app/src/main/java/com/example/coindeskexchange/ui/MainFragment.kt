@@ -1,11 +1,13 @@
 package com.example.coindeskexchange.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.coindeskexchange.R
+import com.example.coindeskexchange.adapter.controller.MainFragmentEpoxyController
 import com.example.coindeskexchange.data.local.Currency
 import com.example.coindeskexchange.data.remote.*
 import com.example.coindeskexchange.databinding.FragmentMainBinding
@@ -19,12 +21,16 @@ class MainFragment : Fragment() {
 
     private val viewModel: MainFragmentViewModel by viewModel()
     private val bpiPair: Pair<String, Currency>? = null
+    private val epoxyController:MainFragmentEpoxyController by lazy {
+        MainFragmentEpoxyController()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
+        Log.d("GGGG", "onCreateView: ")
         return binding.root
     }
 
@@ -39,29 +45,25 @@ class MainFragment : Fragment() {
                 }
                 is ViewState.Success -> {
                     val result = response.data
+                    Log.d("GGGG", "onViewCreated: $result")
                     val test = arrayListOf<Pair<String, Currency>>()
                     result?.let {
                         val usd = it.bpi.uSD
-                        test.add(
-                            Pair(
-                                "USD",
-                                Currency(
-                                    usd.code,
-                                    usd.description,
-                                    usd.rate,
-                                    usd.rateFloat,
-                                    usd.symbol
-                                )
-                            )
-                        )
+                        val gbp = it.bpi.gBP
+                        val eur = it.bpi.eUR
+                        test.add(Pair("USD", Currency(usd.code, usd.description, usd.rate, usd.rateFloat, usd.symbol)))
+                        test.add(Pair("GBP", Currency(gbp.code, gbp.description, gbp.rate, gbp.rateFloat, gbp.symbol)))
+                        test.add(Pair("EUR", Currency(eur.code, eur.description, eur.rate, eur.rateFloat, eur.symbol)))
                     }
-
+                    epoxyController.currencyList = test
                 }
                 is ViewState.Error -> {
 
                 }
             }
         }
+
+        binding.epoxyRecView.setController(epoxyController)
     }
 
     override fun onDestroyView() {

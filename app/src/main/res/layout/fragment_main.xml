@@ -9,6 +9,8 @@
     <com.airbnb.epoxy.EpoxyRecyclerView
         android:id="@+id/epoxy_rec_view"
         android:padding="13dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

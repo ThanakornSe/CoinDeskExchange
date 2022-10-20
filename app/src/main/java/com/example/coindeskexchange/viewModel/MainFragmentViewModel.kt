@@ -1,5 +1,6 @@
 package com.example.coindeskexchange.viewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,7 +9,6 @@ import com.example.coindeskexchange.data.remote.Coins
 import com.example.coindeskexchange.repository.CoinsRepository
 import com.example.coindeskexchange.resource.ViewState
 import kotlinx.coroutines.launch
-import retrofit2.Response
 
 class MainFragmentViewModel(private val repository: CoinsRepository):ViewModel() {
     private val _mCoinData = MutableLiveData<ViewState<Coins>>()

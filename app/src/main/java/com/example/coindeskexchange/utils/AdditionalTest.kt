@@ -1,5 +1,7 @@
 package com.example.coindeskexchange.utils
 
+import kotlin.math.sqrt
+
 object AdditionalTest {
 
 
@@ -55,6 +57,39 @@ object AdditionalTest {
             b = c // b = 1 2 3
         }
         return c
+    }
+
+    fun generatedPrimeNumbers(min: Int, max: Int): ArrayList<Long> {
+        val primeList = arrayListOf<Long>()
+        if (min >= max) {
+            return ArrayList()
+        } else {
+            for (i in min..max) {
+                if (checkIsPrimeNumber(i)) {
+                    primeList.add(i.toLong())
+                }
+            }
+        }
+        return primeList
+    }
+
+    fun checkIsPrimeNumber(n: Int): Boolean {
+        if (n == 1) return false
+
+        if (n == 2) return true
+
+        if (n % 2 == 0) return false
+
+        val root = sqrt(n.toDouble()).toInt()
+        var isPrime = true
+
+        for (i in 3..root step 2) {
+            if (n % i == 0) {
+                isPrime = false
+                break
+            }
+        }
+        return isPrime
     }
 
 }

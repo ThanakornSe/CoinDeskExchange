@@ -9,7 +9,6 @@ import com.example.coindeskexchange.R
 
 class MainFragment : Fragment() {
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

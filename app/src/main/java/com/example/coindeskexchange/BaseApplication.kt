@@ -2,6 +2,7 @@ package com.example.coindeskexchange
 
 import android.app.Application
 import com.example.coindeskexchange.di.appModule
+import com.example.coindeskexchange.di.databaseModule
 import com.example.coindeskexchange.di.networkModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -14,7 +15,7 @@ class BaseApplication:Application() {
         startKoin {
             androidLogger(Level.ERROR)
             androidContext(this@BaseApplication)
-            modules(networkModule, appModule)
+            modules(networkModule, appModule , databaseModule)
         }
     }
 }

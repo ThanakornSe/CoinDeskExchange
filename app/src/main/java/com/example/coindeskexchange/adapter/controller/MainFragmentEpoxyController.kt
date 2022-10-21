@@ -4,7 +4,7 @@ import com.airbnb.epoxy.EpoxyController
 import com.example.coindeskexchange.adapter.model.CurrencyItemEpoxyModel
 import com.example.coindeskexchange.adapter.model.DisclaimerItemEpoxyModel
 import com.example.coindeskexchange.adapter.model.TitleCurrencyItemEpoxyModel
-import com.example.coindeskexchange.data.local.Currency
+import com.example.coindeskexchange.data.ui.Currency
 
 class MainFragmentEpoxyController : EpoxyController() {
 
@@ -28,11 +28,11 @@ class MainFragmentEpoxyController : EpoxyController() {
 
     override fun buildModels() {
         updateTime?.let {
-            TitleCurrencyItemEpoxyModel(it).id("Title").addTo(this)
+            TitleCurrencyItemEpoxyModel(it).id(it).addTo(this)
         }
 
         currencyList.forEach {
-            CurrencyItemEpoxyModel(it.second).id(it.first).addTo(this)
+            CurrencyItemEpoxyModel(it.second).id(it.second.rate).addTo(this)
         }
 
         disClaimer?.let {

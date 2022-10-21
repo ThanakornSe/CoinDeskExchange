@@ -1,6 +1,4 @@
-package com.example.coindeskexchange.data.local
-
-import com.squareup.moshi.Json
+package com.example.coindeskexchange.data.ui
 
 data class Currency(
     var code: String,

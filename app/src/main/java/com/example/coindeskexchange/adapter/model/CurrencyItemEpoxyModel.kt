@@ -3,7 +3,7 @@ package com.example.coindeskexchange.adapter.model
 import android.text.Html
 import com.androidfactory.fakestore.epoxy.ViewBindingKotlinModel
 import com.example.coindeskexchange.R
-import com.example.coindeskexchange.data.local.Currency
+import com.example.coindeskexchange.data.ui.Currency
 import com.example.coindeskexchange.databinding.CurrencyItemLayoutBinding
 
 class CurrencyItemEpoxyModel(private val item:Currency):ViewBindingKotlinModel<CurrencyItemLayoutBinding>(R.layout.currency_item_layout) {

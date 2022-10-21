@@ -1,26 +1,44 @@
 package com.example.coindeskexchange.adapter.controller
 
 import com.airbnb.epoxy.EpoxyController
-import com.example.coindeskexchange.adapter.model.CurrencyUSDItemEpoxyModel
+import com.example.coindeskexchange.adapter.model.CurrencyItemEpoxyModel
+import com.example.coindeskexchange.adapter.model.DisclaimerItemEpoxyModel
 import com.example.coindeskexchange.adapter.model.TitleCurrencyItemEpoxyModel
 import com.example.coindeskexchange.data.local.Currency
-import com.example.coindeskexchange.data.remote.Bpi
-import com.example.coindeskexchange.data.remote.USD
-import com.example.coindeskexchange.databinding.TitleItemLayoutBinding
 
-class MainFragmentEpoxyController:EpoxyController() {
+class MainFragmentEpoxyController : EpoxyController() {
 
     var currencyList = arrayListOf<Pair<String, Currency>>()
-    set(value) {
-        field = value
-        requestModelBuild()
-    }
+        set(value) {
+            field = value
+            requestModelBuild()
+        }
+
+    var updateTime: String? = null
+        set(value) {
+            field = value
+            requestModelBuild()
+        }
+
+    var disClaimer: String? = null
+        set(value) {
+            field = value
+            requestModelBuild()
+        }
 
     override fun buildModels() {
-        TitleCurrencyItemEpoxyModel().id("Title").addTo(this)
+        updateTime?.let {
+            TitleCurrencyItemEpoxyModel(it).id("Title").addTo(this)
+        }
 
         currencyList.forEach {
-            CurrencyUSDItemEpoxyModel(it.second).id(it.first).addTo(this)
+            CurrencyItemEpoxyModel(it.second).id(it.first).addTo(this)
         }
+
+        disClaimer?.let {
+            DisclaimerItemEpoxyModel(it).id(it).addTo(this)
+        }
+
+
     }
 }

@@ -8,5 +8,5 @@ import org.koin.dsl.module
 val appModule = module {
 
     single { MainFragmentViewModel(get()) }
-    single<CoinsRepository> { CoinsRepositoryImpl(get()) }
+    single<CoinsRepository> { CoinsRepositoryImpl(get(),get()) }
 }

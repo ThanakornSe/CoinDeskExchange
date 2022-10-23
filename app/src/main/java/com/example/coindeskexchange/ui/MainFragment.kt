@@ -13,6 +13,9 @@ import androidx.core.content.ContextCompat.registerReceiver
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.coindeskexchange.adapter.controller.MainFragmentEpoxyController
+import com.example.coindeskexchange.data.local.EURPriceHistory
+import com.example.coindeskexchange.data.local.GBPPriceHistory
+import com.example.coindeskexchange.data.local.USDPriceHistory
 import com.example.coindeskexchange.data.remote.Bpi
 import com.example.coindeskexchange.data.ui.Currency
 import com.example.coindeskexchange.databinding.FragmentMainBinding
@@ -102,6 +105,10 @@ class MainFragment : Fragment() {
                         epoxyController.updateTime = convertDateFormat(it.time.updated)
                         epoxyController.disClaimer = it.disclaimer
                         epoxyController.currencyList = pairList
+
+                        viewModel.recordUSDHistory(USDPriceHistory(convertDateFormat(it.time.updated),usd.rate))
+                        viewModel.recordEURHistory(EURPriceHistory(convertDateFormat(it.time.updated),eur.rate))
+                        viewModel.recordGBPHistory(GBPPriceHistory(convertDateFormat(it.time.updated),gbp.rate))
                     }
                 }
                 is ViewState.Error -> {

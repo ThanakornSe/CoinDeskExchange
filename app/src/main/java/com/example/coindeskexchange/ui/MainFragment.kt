@@ -11,7 +11,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat.registerReceiver
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.coindeskexchange.adapter.controller.MainFragmentEpoxyController
+import com.example.coindeskexchange.data.remote.Bpi
 import com.example.coindeskexchange.data.ui.Currency
 import com.example.coindeskexchange.databinding.FragmentMainBinding
 import com.example.coindeskexchange.resource.ViewState
@@ -28,7 +30,7 @@ class MainFragment : Fragment() {
 
     private val viewModel: MainFragmentViewModel by viewModel()
     private val epoxyController:MainFragmentEpoxyController by lazy {
-        MainFragmentEpoxyController()
+        MainFragmentEpoxyController(::onCurrencyClick)
     }
     private lateinit var minuteUpdateReceiver:BroadcastReceiver
 
@@ -37,15 +39,19 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
-        Log.d("GGGG", "onCreateView: ")
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         fetchData()
         binding.epoxyRecView.setController(epoxyController)
+    }
+
+    private fun onCurrencyClick(currencyCode:String) {
+        this.findNavController().navigate(
+            MainFragmentDirections.actionMainFragmentToCoinDetailFragment(currencyCode)
+        )
     }
 
     private fun fetchData() {

@@ -8,6 +8,19 @@
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.example.coindeskexchange.ui.MainFragment"
-        android:label="fragment_main"
-        tools:layout="@layout/fragment_main" />
+        android:label="BitCoin Exchange Rate"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_coinDetailFragment"
+            app:destination="@id/coinDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/coinDetailFragment"
+        android:name="com.example.coindeskexchange.ui.CoinDetailFragment"
+        android:label="Currency Detail"
+        tools:layout="@layout/fragment_coin_detail" >
+        <argument
+            android:name="currency_code"
+            app:argType="string" />
+    </fragment>
 </navigation>

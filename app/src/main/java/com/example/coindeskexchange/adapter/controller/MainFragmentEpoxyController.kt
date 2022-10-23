@@ -6,7 +6,7 @@ import com.example.coindeskexchange.adapter.model.DisclaimerItemEpoxyModel
 import com.example.coindeskexchange.adapter.model.TitleCurrencyItemEpoxyModel
 import com.example.coindeskexchange.data.ui.Currency
 
-class MainFragmentEpoxyController : EpoxyController() {
+class MainFragmentEpoxyController(private val currencyClick:(code:String) -> Unit) : EpoxyController() {
 
     var currencyList = arrayListOf<Pair<String, Currency>>()
         set(value) {
@@ -32,7 +32,7 @@ class MainFragmentEpoxyController : EpoxyController() {
         }
 
         currencyList.forEach {
-            CurrencyItemEpoxyModel(it.second).id(it.second.rate).addTo(this)
+            CurrencyItemEpoxyModel(it.second, currencyClick).id(it.second.rate).addTo(this)
         }
 
         disClaimer?.let {

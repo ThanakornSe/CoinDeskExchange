@@ -13,4 +13,5 @@
     <color name="colorWhiteButDarkGrey2022">#FFFFFF</color>
     <color name="colorGreyTextTime">#A2A2A2</color>
     <color name="yellowExchangeButton">#e9b872</color>
+    <color name="greenExchangeColor">#04724d</color>
 </resources>

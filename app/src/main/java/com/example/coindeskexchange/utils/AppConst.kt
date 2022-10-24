@@ -16,7 +16,7 @@ object AppConst {
         val df = SimpleDateFormat("MMM dd, yyyy HH:mm:ss", Locale.ENGLISH)
         df.timeZone = TimeZone.getTimeZone("UTC")
         val date: Date = df.parse(updateTime) as Date
-        val newDateFormat = SimpleDateFormat("dd MMM yyyy HH:mm", Locale.ENGLISH)
+        val newDateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.ENGLISH)
         newDateFormat.timeZone = TimeZone.getDefault()
         return newDateFormat.format(date)
     }

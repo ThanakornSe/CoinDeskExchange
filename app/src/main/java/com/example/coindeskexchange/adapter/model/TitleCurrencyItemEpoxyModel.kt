@@ -6,6 +6,6 @@ import com.example.coindeskexchange.databinding.TitleItemLayoutBinding
 
 class TitleCurrencyItemEpoxyModel(val time:String):ViewBindingKotlinModel<TitleItemLayoutBinding>(R.layout.title_item_layout) {
     override fun TitleItemLayoutBinding.bind() {
-        txtLastUpdatedTime.text = "Rate updated at $time"
+        txtLastUpdatedTime.text = "Rate updated on $time"
     }
 }

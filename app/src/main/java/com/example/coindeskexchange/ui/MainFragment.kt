@@ -6,14 +6,16 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.menu.MenuBuilder
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.example.coindeskexchange.R
 import com.example.coindeskexchange.adapter.controller.MainFragmentEpoxyController
 import com.example.coindeskexchange.data.local.PriceHistory
 import com.example.coindeskexchange.data.remote.Coins
@@ -40,6 +42,22 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
+        requireActivity().addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.delete_history_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // Handle the menu selection
+                return when (menuItem.itemId) {
+                    R.id.delete_history -> {
+                        viewModel.deleteHistory()
+                        true
+                    }
+                    else -> { false }
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
         return binding.root
     }
 

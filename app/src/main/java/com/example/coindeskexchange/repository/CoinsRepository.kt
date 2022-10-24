@@ -14,4 +14,6 @@ interface CoinsRepository {
     fun getGBPHistoryRate(): Flow<List<PriceHistory>>
 
     suspend fun insertPriceHistoryRate(gbp: PriceHistory)
+
+    suspend fun deleteHistory()
 }

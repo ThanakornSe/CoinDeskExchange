@@ -43,4 +43,8 @@ class MainFragmentViewModel(private val repository: CoinsRepository):ViewModel()
     fun recordPriceHistory(priceHistory: PriceHistory) = viewModelScope.launch {
         repository.insertPriceHistoryRate(priceHistory)
     }
+
+    fun deleteHistory() = viewModelScope.launch {
+        repository.deleteHistory()
+    }
 }

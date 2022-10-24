@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.coindeskexchange.data.local.PriceHistory
 import kotlinx.coroutines.flow.Flow
+import retrofit2.http.DELETE
 
 @Dao
 interface CoinDao {
@@ -20,4 +21,7 @@ interface CoinDao {
 
     @Query("SELECT timeStamp, RateGBP FROM price_history_table ORDER BY timeStamp DESC")
     fun getGbpRateHist(): Flow<List<PriceHistory>>
+
+    @Query("DELETE FROM price_history_table")
+    suspend fun deleteHistory()
 }

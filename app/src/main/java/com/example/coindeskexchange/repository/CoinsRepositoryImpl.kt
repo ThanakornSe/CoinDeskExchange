@@ -27,4 +27,8 @@ class CoinsRepositoryImpl(private val coinDeskApi: CoinDeskApi, private val coin
         coinDao.insertPriceHistory(priceHistory)
     }
 
+    override suspend fun deleteHistory() {
+        coinDao.deleteHistory()
+    }
+
 }

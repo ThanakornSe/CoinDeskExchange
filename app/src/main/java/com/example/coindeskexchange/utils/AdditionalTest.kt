@@ -36,6 +36,23 @@ object AdditionalTest {
         return fibonacciList
     }
 
+    fun getFib(n:Int):ArrayList<Int> {
+        if (n == 0 || n<=1){
+            return arrayListOf(n)
+        }
+
+        val fiboList = arrayListOf<Int>()
+        var a = 0
+        var b = 1
+        for (i in 0 until n) {
+            fiboList.add(a)
+            val c = a+b
+            a = b
+            b = c
+        }
+        return fiboList
+    }
+
     /**
      * Return the n-th fibonacci number
      * They are defined like this:

@@ -59,7 +59,7 @@ class AdditionalTestTest {
     }
 
     @Test
-    fun `check isPrimeNumber Function if it prime return false`() {
+    fun `check isPrimeNumber Function if it not prime return false`() {
         val n = 4
         val result = checkIsPrimeNumber(n)
         assertThat(result).isFalse()

@@ -24,6 +24,10 @@ import com.example.coindeskexchange.databinding.FragmentMainBinding
 import com.example.coindeskexchange.resource.ViewState
 import com.example.coindeskexchange.utils.AppConst.convertDateFormat
 import com.example.coindeskexchange.viewModel.MainFragmentViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -63,6 +67,16 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.swipeRefresh.apply {
+            setOnRefreshListener {
+                viewModel.getAllCoins()
+                MainScope().launch {
+                    delay(1500)
+                    isRefreshing = false
+                }
+            }
+        }
+
         viewModel.getAllCoins()
         observeLiveData()
         binding.epoxyRecView.setController(epoxyController)

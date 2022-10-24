@@ -1,40 +1,30 @@
 package com.example.coindeskexchange.repository
 
-import com.example.coindeskexchange.data.local.EURPriceHistory
-import com.example.coindeskexchange.data.local.GBPPriceHistory
-import com.example.coindeskexchange.data.local.USDPriceHistory
+import com.example.coindeskexchange.data.local.PriceHistory
 import com.example.coindeskexchange.data.remote.Coins
 import com.example.coindeskexchange.database.CoinDao
 import com.example.coindeskexchange.network.CoinDeskApi
 import kotlinx.coroutines.flow.Flow
-import retrofit2.Response
 
 class CoinsRepositoryImpl(private val coinDeskApi: CoinDeskApi, private val coinDao: CoinDao) : CoinsRepository {
     override suspend fun getAllCoin():Coins {
         return coinDeskApi.getAllCoins()
     }
 
-    override fun getUSDHistoryRate(): Flow<List<USDPriceHistory>> {
+    override fun getUSDHistoryRate(): Flow<List<PriceHistory>> {
         return coinDao.getUsdRateHist()
     }
 
-    override fun getEURHistoryRate(): Flow<List<EURPriceHistory>> {
+    override fun getEURHistoryRate(): Flow<List<PriceHistory>> {
         return coinDao.getEurRateHist()
     }
 
-    override fun getGBPHistoryRate(): Flow<List<GBPPriceHistory>> {
+    override fun getGBPHistoryRate(): Flow<List<PriceHistory>> {
         return coinDao.getGbpRateHist()
     }
 
-    override suspend fun insertUSDRate(usd: USDPriceHistory) {
-        coinDao.insertUSDHistory(usd)
+    override suspend fun insertPriceHistoryRate(priceHistory: PriceHistory) {
+        coinDao.insertPriceHistory(priceHistory)
     }
 
-    override suspend fun insertEURRate(eur: EURPriceHistory) {
-        coinDao.insertEURHistory(eur)
-    }
-
-    override suspend fun insertGBPRate(gbp: GBPPriceHistory) {
-        coinDao.insertGBPHistory(gbp)
-    }
 }

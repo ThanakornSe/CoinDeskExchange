@@ -1,10 +1,12 @@
 package com.example.coindeskexchange.ui
 
 import android.annotation.SuppressLint
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
@@ -13,12 +15,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.coindeskexchange.R
+import com.example.coindeskexchange.adapter.controller.CoinDetailFragmentEpoxyController
+import com.example.coindeskexchange.data.local.PriceHistory
 import com.example.coindeskexchange.data.remote.Bpi
 import com.example.coindeskexchange.data.remote.USD
 import com.example.coindeskexchange.data.ui.Currency
 import com.example.coindeskexchange.databinding.FragmentCoinDetailBinding
 import com.example.coindeskexchange.resource.ViewState
+import com.example.coindeskexchange.utils.AppConst
 import com.example.coindeskexchange.viewModel.MainFragmentViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.DecimalFormat
@@ -29,6 +35,9 @@ class CoinDetailFragment : Fragment() {
 
     private val viewModel: MainFragmentViewModel by viewModel()
     private lateinit var minuteUpdateReceiver: BroadcastReceiver
+    private val epoxyController:CoinDetailFragmentEpoxyController by lazy {
+        CoinDetailFragmentEpoxyController()
+    }
 
     private lateinit var currencyCode:String
 
@@ -42,12 +51,14 @@ class CoinDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getAllCoins()
         currencyCode = CoinDetailFragmentArgs.fromBundle(requireArguments()).currencyCode
         fetchData(currencyCode)
+        epoxyController.currencyCode = currencyCode
+        binding.rvHistory.setController(epoxyController)
     }
 
     private fun fetchData(code:String) {
+        viewModel.getAllCoins()
         when (code) {
             "USD" -> {
                 viewModel.currencyUSD.observe(viewLifecycleOwner) { response ->
@@ -63,6 +74,9 @@ class CoinDetailFragment : Fragment() {
                             }
                         }
                     }
+                }
+                viewModel.getUSDHistory().observe(viewLifecycleOwner) {
+                    it?.let { epoxyController.historyRate = it }
                 }
             }
             "EUR" -> {
@@ -80,6 +94,9 @@ class CoinDetailFragment : Fragment() {
                         }
                     }
                 }
+                viewModel.getEURHistory().observe(viewLifecycleOwner) {
+                    it?.let { epoxyController.historyRate = it }
+                }
             }
             "GBP" -> {
                 viewModel.currencyGBP.observe(viewLifecycleOwner) { response ->
@@ -96,17 +113,30 @@ class CoinDetailFragment : Fragment() {
                         }
                     }
                 }
+                viewModel.getGBPHistory().observe(viewLifecycleOwner) {
+                    it?.let { epoxyController.historyRate = it }
+                }
             }
         }
         viewModel.coinData.observe(viewLifecycleOwner) { response ->
-            val result = response.data?.bpi
-            result?.let { bpi ->
+            val result = response.data
+            result?.let {
                 when (response) {
                     is ViewState.Loading -> {
 
                     }
                     is ViewState.Success -> {
-
+                        val usd = it.bpi.uSD
+                        val gbp = it.bpi.gBP
+                        val eur = it.bpi.eUR
+                        viewModel.recordPriceHistory(
+                            PriceHistory(
+                                AppConst.convertDateFormat(it.time.updated),
+                                RateUSD = usd.rate,
+                                RateEUR = eur.rate,
+                                RateGBP = gbp.rate
+                            )
+                        )
                     }
                     is ViewState.Error -> {
 
@@ -133,12 +163,10 @@ class CoinDetailFragment : Fragment() {
     }
 
     private fun startMinuteUpdater() {
-        val intentFilter = IntentFilter()
-        intentFilter.addAction(Intent.ACTION_TIME_TICK)
+        val intentFilter = IntentFilter(Intent.ACTION_TIME_TICK)
         minuteUpdateReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-//                fetchData()
-//                epoxyController.requestModelBuild()
+                viewModel.getAllCoins()
             }
         }
         requireActivity().registerReceiver(minuteUpdateReceiver, intentFilter)

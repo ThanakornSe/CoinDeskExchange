@@ -4,28 +4,20 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.coindeskexchange.data.local.EURPriceHistory
-import com.example.coindeskexchange.data.local.GBPPriceHistory
-import com.example.coindeskexchange.data.local.USDPriceHistory
+import com.example.coindeskexchange.data.local.PriceHistory
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CoinDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertUSDHistory(usdPriceHistory: USDPriceHistory)
+    suspend fun insertPriceHistory(priceHistory: PriceHistory)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertEURHistory(eurPriceHistory: EURPriceHistory)
+    @Query("SELECT timeStamp, RateUSD FROM price_history_table ORDER BY timeStamp DESC")
+    fun getUsdRateHist(): Flow<List<PriceHistory>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertGBPHistory(gbpPriceHistory: GBPPriceHistory)
+    @Query("SELECT timeStamp, RateEUR FROM price_history_table ORDER BY timeStamp DESC")
+    fun getEurRateHist(): Flow<List<PriceHistory>>
 
-    @Query("SELECT * FROM usd_price_history_table ORDER BY timeStamp DESC")
-    fun getUsdRateHist(): Flow<List<USDPriceHistory>>
-
-    @Query("SELECT * FROM eur_price_history_table ORDER BY timeStamp DESC")
-    fun getEurRateHist(): Flow<List<EURPriceHistory>>
-
-    @Query("SELECT * FROM gbp_price_history_table ORDER BY timeStamp DESC")
-    fun getGbpRateHist(): Flow<List<GBPPriceHistory>>
+    @Query("SELECT timeStamp, RateGBP FROM price_history_table ORDER BY timeStamp DESC")
+    fun getGbpRateHist(): Flow<List<PriceHistory>>
 }

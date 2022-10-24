@@ -9,22 +9,20 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.registerReceiver
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.coindeskexchange.adapter.controller.MainFragmentEpoxyController
-import com.example.coindeskexchange.data.local.EURPriceHistory
-import com.example.coindeskexchange.data.local.GBPPriceHistory
-import com.example.coindeskexchange.data.local.USDPriceHistory
-import com.example.coindeskexchange.data.remote.Bpi
+import com.example.coindeskexchange.data.local.PriceHistory
+import com.example.coindeskexchange.data.remote.Coins
 import com.example.coindeskexchange.data.ui.Currency
 import com.example.coindeskexchange.databinding.FragmentMainBinding
 import com.example.coindeskexchange.resource.ViewState
+import com.example.coindeskexchange.utils.AppConst.convertDateFormat
 import com.example.coindeskexchange.viewModel.MainFragmentViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.math.min
 
 
 class MainFragment : Fragment() {
@@ -32,10 +30,10 @@ class MainFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: MainFragmentViewModel by viewModel()
-    private val epoxyController:MainFragmentEpoxyController by lazy {
+    private val epoxyController: MainFragmentEpoxyController by lazy {
         MainFragmentEpoxyController(::onCurrencyClick)
     }
-    private lateinit var minuteUpdateReceiver:BroadcastReceiver
+    private lateinit var minuteUpdateReceiver: BroadcastReceiver
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,93 +45,76 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fetchData()
+        viewModel.getAllCoins()
+        observeLiveData()
         binding.epoxyRecView.setController(epoxyController)
     }
 
-    private fun onCurrencyClick(currencyCode:String) {
+    private fun onCurrencyClick(currencyCode: String) {
         this.findNavController().navigate(
             MainFragmentDirections.actionMainFragmentToCoinDetailFragment(currencyCode)
         )
     }
 
-    private fun fetchData() {
-        viewModel.getAllCoins()
+    private fun observeLiveData() {
         viewModel.coinData.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is ViewState.Loading -> {
-
-                }
-                is ViewState.Success -> {
-                    val result = response.data
-                    result?.let {
-                        val usd = it.bpi.uSD
-                        val gbp = it.bpi.gBP
-                        val eur = it.bpi.eUR
-                        val pairList = arrayListOf(
-                            Pair(
-                                "USD",
-                                Currency(
-                                    usd.code,
-                                    usd.description,
-                                    usd.rate,
-                                    usd.rateFloat,
-                                    usd.symbol
-                                )
-                            ),
-                            Pair(
-                                "GBP",
-                                Currency(
-                                    gbp.code,
-                                    gbp.description,
-                                    gbp.rate,
-                                    gbp.rateFloat,
-                                    gbp.symbol
-                                )
-                            ),
-                            Pair(
-                                "EUR",
-                                Currency(
-                                    eur.code,
-                                    eur.description,
-                                    eur.rate,
-                                    eur.rateFloat,
-                                    eur.symbol
-                                )
+            if ( response is ViewState.Success) {
+                val result = response.data
+                result?.let {
+                    val pairList = arrayListOf(
+                        Pair(
+                            it.bpi.uSD.code,
+                            Currency(
+                                it.bpi.uSD.code,
+                                it.bpi.uSD.description,
+                                it.bpi.uSD.rate,
+                                it.bpi.uSD.rateFloat,
+                                it.bpi.uSD.symbol
+                            )
+                        ),
+                        Pair(
+                            it.bpi.gBP.code,
+                            Currency(
+                                it.bpi.gBP.code,
+                                it.bpi.gBP.description,
+                                it.bpi.gBP.rate,
+                                it.bpi.gBP.rateFloat,
+                                it.bpi.gBP.symbol
+                            )
+                        ),
+                        Pair(
+                            it.bpi.eUR.code,
+                            Currency(
+                                it.bpi.eUR.code,
+                                it.bpi.eUR.description,
+                                it.bpi.eUR.rate,
+                                it.bpi.eUR.rateFloat,
+                                it.bpi.eUR.symbol
                             )
                         )
-                        epoxyController.updateTime = convertDateFormat(it.time.updated)
-                        epoxyController.disClaimer = it.disclaimer
-                        epoxyController.currencyList = pairList
+                    )
+                    epoxyController.updateTime = convertDateFormat(it.time.updated)
+                    epoxyController.disClaimer = it.disclaimer
+                    epoxyController.currencyList = pairList
 
-                        viewModel.recordUSDHistory(USDPriceHistory(convertDateFormat(it.time.updated),usd.rate))
-                        viewModel.recordEURHistory(EURPriceHistory(convertDateFormat(it.time.updated),eur.rate))
-                        viewModel.recordGBPHistory(GBPPriceHistory(convertDateFormat(it.time.updated),gbp.rate))
-                    }
-                }
-                is ViewState.Error -> {
-
+                    viewModel.recordPriceHistory(
+                        PriceHistory(
+                            convertDateFormat(it.time.updated),
+                            RateUSD = it.bpi.uSD.rate,
+                            RateEUR = it.bpi.eUR.rate,
+                            RateGBP = it.bpi.gBP.rate
+                        )
+                    )
                 }
             }
         }
     }
 
-    private fun convertDateFormat(updateTime: String): String {
-        val df = SimpleDateFormat("MMM dd, yyyy HH:mm:ss", Locale.ENGLISH)
-        df.timeZone = TimeZone.getTimeZone("UTC")
-        val date: Date = df.parse(updateTime) as Date
-        val newDateFormat = SimpleDateFormat("dd MMM yyyy HH:mm", Locale.ENGLISH)
-        newDateFormat.timeZone = TimeZone.getDefault()
-        return newDateFormat.format(date)
-    }
-
     private fun startMinuteUpdater() {
-        val intentFilter = IntentFilter()
-        intentFilter.addAction(Intent.ACTION_TIME_TICK)
+        val intentFilter = IntentFilter(Intent.ACTION_TIME_TICK)
         minuteUpdateReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                fetchData()
-                epoxyController.requestModelBuild()
+                viewModel.getAllCoins()
             }
         }
         requireActivity().registerReceiver(minuteUpdateReceiver, intentFilter)

@@ -12,7 +12,7 @@ import java.time.Duration
 
 val networkModule = module {
     factory { providesOkHttpClient() }
-    factory { provideCoinDeskApi(get()) }
+    single { provideCoinDeskApi(get()) }
     factory { provideMoshiBuilder() }
     single { providesRetrofit(get(),get()) }
 }

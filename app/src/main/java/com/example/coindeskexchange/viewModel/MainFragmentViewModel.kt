@@ -1,11 +1,11 @@
 package com.example.coindeskexchange.viewModel
 
-import android.util.Log
 import androidx.lifecycle.*
-import com.example.coindeskexchange.data.local.EURPriceHistory
-import com.example.coindeskexchange.data.local.GBPPriceHistory
-import com.example.coindeskexchange.data.local.USDPriceHistory
-import com.example.coindeskexchange.data.remote.*
+import com.example.coindeskexchange.data.local.PriceHistory
+import com.example.coindeskexchange.data.remote.Coins
+import com.example.coindeskexchange.data.remote.EUR
+import com.example.coindeskexchange.data.remote.GBP
+import com.example.coindeskexchange.data.remote.USD
 import com.example.coindeskexchange.repository.CoinsRepository
 import com.example.coindeskexchange.resource.ViewState
 import kotlinx.coroutines.launch
@@ -36,19 +36,11 @@ class MainFragmentViewModel(private val repository: CoinsRepository):ViewModel()
         }
     }
 
-    fun getUSDHistory():LiveData<List<USDPriceHistory>> = repository.getUSDHistoryRate().asLiveData()
-    fun getEURHistory():LiveData<List<EURPriceHistory>> = repository.getEURHistoryRate().asLiveData()
-    fun getGBPHistory():LiveData<List<GBPPriceHistory>> = repository.getGBPHistoryRate().asLiveData()
+    fun getUSDHistory():LiveData<List<PriceHistory>> = repository.getUSDHistoryRate().asLiveData()
+    fun getEURHistory():LiveData<List<PriceHistory>> = repository.getEURHistoryRate().asLiveData()
+    fun getGBPHistory():LiveData<List<PriceHistory>> = repository.getGBPHistoryRate().asLiveData()
 
-    fun recordUSDHistory(usd: USDPriceHistory) = viewModelScope.launch {
-        repository.insertUSDRate(usd)
-    }
-
-    fun recordEURHistory(eur: EURPriceHistory) = viewModelScope.launch {
-        repository.insertEURRate(eur)
-    }
-
-    fun recordGBPHistory(gbp: GBPPriceHistory) = viewModelScope.launch {
-        repository.insertGBPRate(gbp)
+    fun recordPriceHistory(priceHistory: PriceHistory) = viewModelScope.launch {
+        repository.insertPriceHistoryRate(priceHistory)
     }
 }

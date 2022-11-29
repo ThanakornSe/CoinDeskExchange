@@ -63,8 +63,9 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
 
     // Epoxy (RecyclerView)
-    def epoxy_version = "4.6.3"
+    def epoxy_version = "5.1.1"
     implementation "com.airbnb.android:epoxy:$epoxy_version"
+    annotationProcessor "com.airbnb.android:epoxy-processor:$epoxy_version"
 
     // Room
     implementation "androidx.room:room-runtime:2.4.3"
